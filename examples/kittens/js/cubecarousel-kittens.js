@@ -21,7 +21,6 @@ jQuery(function ($) {
 						dataType: 'json'
 					})
 						.then(function (data) {
-							console.log(data);
 							return $.ajax({
 								url: 'examples/kittens/mocks/grab-data.json',
 								dataType: 'json'

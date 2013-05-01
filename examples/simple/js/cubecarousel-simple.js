@@ -29,9 +29,11 @@ jQuery(function ($) {
 		},
 
 		// renderer function for single pane 
-		render: function (currentDataObject, currentPane) {
+		render: function (currentDataObject, currentPane, index) {
 				
-			currentPane.find('.content').text(currentDataObject.content);
+			currentPane.find('.cube-carousel-content')
+				.addClass('simple-cube-content-' + index)
+				.text(currentDataObject.content);
 				
 			return currentPane;	
 		},
@@ -40,9 +42,18 @@ jQuery(function ($) {
 		prv: {
 		
 
-			// creation of control arrows
+			// logic for control dots
 			buildControls: function () {
+				
+				var that = this;
 
+				$('.simple-cube-controls').on('click', 'a', function () {
+				
+					var targetIndex = parseInt($(this).text(), 10) - 1;
+					that.moveTo(targetIndex);
+
+					return false;
+				});
 			},
 
 		}
@@ -62,5 +73,6 @@ jQuery(function ($) {
 	carousel.on('aftermove', function (e) {
 		
 	});
+
 
 });

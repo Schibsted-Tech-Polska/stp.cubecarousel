@@ -1,3 +1,28 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2013 Schibsted Tech Polska
+ * Authors: Jacek Wojna, Krystian Jarmicki
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copyright
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is 
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in 
+ * all copies or substantial portions of the Software. 
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+ * 
+ */
+
 jQuery(function ($) {
 	
 	// todo: make css class names customizable
@@ -87,13 +112,11 @@ jQuery(function ($) {
 					width : 580,
 					height : 400
 				},
-				render: function (data, template) { },
+				render: function () { },
 				dataGetter: function () { },
-				autoplay : false, 
+				autoplay : false,
+				useShortestPath: true, 
 				duration : 800,
-				delay : 3000,
-				showControls : true,
-				showCounter : true,
 				prv : {},
 				pub : {}
 			};
@@ -256,7 +279,6 @@ jQuery(function ($) {
 	CubeCarousel.prototype.initialize = function () {
 
 		var that = this,
-			newHeightProportion = Math.round(this.options.dimensions.height / this.options.dimensions.width * 1000) / 1000,
 			firstPane,
 			perspectiveContainer,
 		
@@ -312,74 +334,79 @@ jQuery(function ($) {
 					
 			};
 
-		/* extend carousel instance with additional private methods */
-		$.extend(this, this.options.prv);
 
-		if(typeof this.options.render !== 'function') {
-			_error('missing required render function');
-			return;
-		}
-		this.renderPaneTemplate = _bind(this.options.render, this);
-
-		this.cubeContainerNode = this.options.cubeContainerNode;
-		// check if browser supports css transforms and transitions
-		if (_supports('transform', transform3dTest) && _supports('transformStyle', transformStyleTest) && _supports('transition')) {
-			that.useCube = true;
-			that.cubeContainerNode.addClass('cube-carousel-css3');
-		} else { // fallback mode - use inline list instead of cube
-			that.useCube = false;
-			that.cubeContainerNode.addClass('cube-carousel-no-css3');	
-		}
-		this.cubeContainerNode.addClass('cube-carousel-container');
-
-		debugger;
-
-		/* grab template */
-		firstPane = that.cubeContainerNode.find('.cube-carousel-template').first();	
-		that.paneTemplate = firstPane.clone();
-		firstPane.remove();
-
-		perspectiveContainer = $('<div class="cube-carousel-perspective-container"></div>');
-
-		/* additional container for cubes */
-		this.cubeNode = $('<div class="cube-carousel-panes"></div>');
-		this.options.cubeContainerNode.append(perspectiveContainer.append(this.cubeNode));
-		this.cubeNode.bind(_transitionendEvents, function () {
-			that.locked = false;
-		});
-
-		/* Resize cube if it's too big as compared with windows's width */
-		if ($(window).width() < this.realDimensions.width) {
-			this.realDimensions.width = $(window).width();
-			this.realDimensions.height = Math.round(this.realDimensions.width * newHeightProportion);
-		}
-
-		this.setSize(this.realDimensions);
-
-		/* Resize cube if window's size changes */
-		$(window).resize(function () {
-			if ($(window).width() < that.options.dimensions.width) {
-				that.realDimensions.width = $(window).width();
-				that.realDimensions.height = Math.round(that.realDimensions.width * newHeightProportion);
-				that.setSize(that.realDimensions);
-			} else if ($(window).width() > that.realDimensions.width && that.realDimensions.width !== that.options.dimensions.width) {
-				if ($(window).width() > that.options.dimensions.width) {
-					that.realDimensions.width = that.options.dimensions.width;
-				} else {
-					that.realDimensions.width = $(window).width();
-				}
-				that.realDimensions.height = Math.round(that.realDimensions.width * newHeightProportion);
-				that.setSize(that.realDimensions);
-			}
-		});
-
-
-		/* Grabbing data */
+		/* delay initialization to make .on('init') possible after constructor call */
 		setTimeout(function () {
+
+			/* extend carousel instance with additional private methods */
+			$.extend(that, that.options.prv);
+
+			if(typeof that.options.render !== 'function') {
+				_error('missing required render function');
+				return;
+			}
+			that.renderPaneTemplate = _bind(that.options.render, that);
+
+			that.cubeContainerNode = that.options.cubeContainerNode;
+			// check if browser supports css transforms and transitions
+			if (_supports('transform', transform3dTest) && _supports('transformStyle', transformStyleTest) && _supports('transition')) {
+				that.useCube = true;
+				that.cubeContainerNode.addClass('cube-carousel-css3');
+			} else { // fallback mode - use inline list instead of cube
+				that.useCube = false;
+				that.cubeContainerNode.addClass('cube-carousel-no-css3');	
+			}
+			that.cubeContainerNode.addClass('cube-carousel-container');
+
+			/* grab template */
+			firstPane = that.cubeContainerNode.find('.cube-carousel-template').first();	
+			that.paneTemplate = firstPane.clone();
+			firstPane.remove();
+
+			perspectiveContainer = $('<div class="cube-carousel-perspective-container"></div>');
+
+			/* additional container for panes */
+			that.cubeNode = $('<div class="cube-carousel-panes"></div>');
+			that.cubeContainerNode.append(perspectiveContainer.append(that.cubeNode));
+			that.cubeNode.bind(_transitionendEvents, function () {
+				that.locked = false;
+			});
+
+			/* Resize cube if window's size changes */
+			$(window).on('resize', _bind(that.handleResize, that));
+			that.handleResize();
+
 			that.trigger('init');
 			that.setData(that.options.dataGetter);	
 		}, 0);
 		
+	};
+
+	/**
+	 * Resizes cube proportionally, according to parent's width
+	 *
+	 * @private
+	 * @method handleResize
+	 * @return {Undefined} 
+	 */
+	CubeCarousel.prototype.handleResize = function () {
+
+		var	parentNode = this.cubeContainerNode.parent(),
+			newHeightProportion = Math.round(this.options.dimensions.height / this.options.dimensions.width * 1000) / 1000;
+
+		if (parentNode.width() < this.options.dimensions.width) {
+			this.realDimensions.width = parentNode.width();
+			this.realDimensions.height = Math.round(this.realDimensions.width * newHeightProportion);
+		} else if (parentNode.width() > this.realDimensions.width && this.realDimensions.width !== this.options.dimensions.width) {
+			if (parentNode.width() > this.options.dimensions.width) {
+				this.realDimensions.width = this.options.dimensions.width;
+			} else {
+				this.realDimensions.width = parentNode.width();
+			}
+			this.realDimensions.height = Math.round(this.realDimensions.width * newHeightProportion);
+		}
+		
+		this.setSize(this.realDimensions);	
 	};
 
 	/**
@@ -393,7 +420,7 @@ jQuery(function ($) {
 		
 		this.initPanes();
 
-		if(this.options.autoplay) {
+		if(this.options.autoplay !== false) {
 			this.startAutoplay();	
 		}
 
@@ -414,10 +441,18 @@ jQuery(function ($) {
 	 */
 	CubeCarousel.prototype.setSize = function (dimensions) {
 		
-		this.options.cubeContainerNode.css({
+		this.cubeContainerNode.css({
 			width : dimensions.width,
-			height : dimensions.height,
-			fontSize : dimensions.width
+			height : dimensions.height
+		});
+
+		this.cubeNode.css({
+			fontSize : dimensions.width	
+		});
+
+		this.trigger('resize', {
+			width: dimensions.width,
+			height: dimensions.height
 		});
 	};
 	
@@ -466,7 +501,7 @@ jQuery(function ($) {
 
 		for(i = 0; i < indexes.length; i++) {
 			dataObject = this.data[this.dataIndexOffset(this.currentIndex + indexes[i])];
-			currentPane = this.renderPaneTemplate(dataObject, this.paneTemplate.clone());
+			currentPane = this.renderPaneTemplate(dataObject, this.paneTemplate.clone(), this.dataIndexOffset(this.currentIndex + indexes[i]));
 			this.cubeNode.append(currentPane);
 			currentPane.addClass(classMap[indexes[i]]);
 		}
@@ -492,7 +527,7 @@ jQuery(function ($) {
 
 		for(i = 0; i < indexes.length; i++) {
 			dataObject = this.data[this.dataIndexOffset(this.currentIndex + indexes[i])];
-			currentPane = this.renderPaneTemplate(dataObject, this.paneTemplate.clone());
+			currentPane = this.renderPaneTemplate(dataObject, this.paneTemplate.clone(), this.dataIndexOffset(this.currentIndex + indexes[i]));
 			this.cubeNode.append(currentPane);
 		}
 
@@ -592,7 +627,7 @@ jQuery(function ($) {
 				that.cubeNode.find('.cube-carousel-right').removeClass('cube-carousel-right').addClass('cube-carousel-front');
 
 				// new right pane
-				newPane = that.renderPaneTemplate(that.data[that.dataIndexOffset(that.currentIndex + 1)], that.paneTemplate.clone());
+				newPane = that.renderPaneTemplate(that.data[that.dataIndexOffset(that.currentIndex + 1)], that.paneTemplate.clone(), that.dataIndexOffset(that.currentIndex + 1));
 				newPane.addClass('cube-carousel-right');
 				that.cubeNode.append(newPane);
 
@@ -652,7 +687,7 @@ jQuery(function ($) {
 				that.cubeNode.find('.cube-carousel-left').removeClass('cube-carousel-left').addClass('cube-carousel-front');
 
 				// new left pane	
-				newPane = that.renderPaneTemplate(that.data[that.dataIndexOffset(that.currentIndex - 1)], that.paneTemplate.clone());
+				newPane = that.renderPaneTemplate(that.data[that.dataIndexOffset(that.currentIndex - 1)], that.paneTemplate.clone(), that.dataIndexOffset(that.currentIndex - 1));
 				newPane.addClass('cube-carousel-left');
 				that.cubeNode.prepend(newPane);
 
@@ -704,7 +739,7 @@ jQuery(function ($) {
 				var newPane;
 			
 				// render and append new pane	
-				newPane = that.renderPaneTemplate(that.data[that.dataIndexOffset(that.currentIndex + 2)], that.paneTemplate.clone());
+				newPane = that.renderPaneTemplate(that.data[that.dataIndexOffset(that.currentIndex + 2)], that.paneTemplate.clone(), that.dataIndexOffset(that.currentIndex + 2));
 
 				that.cubeNode.children().first().remove();
 				that.cubeNode.append(newPane);
@@ -753,7 +788,7 @@ jQuery(function ($) {
 
 				var newPane;
 				
-				newPane = that.renderPaneTemplate(that.data[that.dataIndexOffset(that.currentIndex - 2)], that.paneTemplate.clone());
+				newPane = that.renderPaneTemplate(that.data[that.dataIndexOffset(that.currentIndex - 2)], that.paneTemplate.clone(), that.dataIndexOffset(that.currentIndex - 2));
 
 				that.cubeNode.children().last().remove();
 				that.cubeNode.prepend(newPane);
@@ -780,24 +815,27 @@ jQuery(function ($) {
 	 * Goes to element specified by index (starting with 0)
 	 *
 	 * @public
-	 * @method goTo
+	 * @method moveTo
 	 * @param {Number} index Value of target index 
 	 * @param {Function} callback Callback to be called when cube moved to specified index
 	 * @return {Undefined}
 	 */
-	CubeCarousel.prototype.goTo = function (index, callback) {
+	CubeCarousel.prototype.moveTo = function (index, callback) {
 
 		var	direction,
 			that = this;
-		
+
+		index = parseInt(index, 10);
+	
 		if(this.currentIndex !== index) {
+
 			index = this.dataIndexOffset(index);
 
 			direction = (this.currentIndex < index)	? 'Right' : 'Left';
 
 			this['move' + direction](function () {
 				setTimeout(function () {
-					that.goTo(index);
+					that.moveTo(index);
 				}, 0);
 			});
 		} else if(typeof callback === 'function') {
@@ -931,7 +969,7 @@ jQuery(function ($) {
 
 		var that = this;
 
-		if (!this.isLocked() && this.options.autoplay) {
+		if (!this.isLocked() && this.options.autoplay !== false) {
 
 			if (this.autoplayTimeout !== null) {
 				clearTimeout(this.autoplayTimeout);
@@ -941,7 +979,7 @@ jQuery(function ($) {
 				that.moveRight(function() {
 					that.startAutoplay();
 				});
-			}, this.options.delay);
+			}, this.options.autoplay);
 
 		}
 	};
@@ -954,7 +992,7 @@ jQuery(function ($) {
 	 * @return {Undefined}
 	 */
 	CubeCarousel.prototype.stopAutoplay = function () {
-		if (this.options.autoplay && this.autoplayTimeout !== null) {
+		if (this.options.autoplay !== false && this.autoplayTimeout !== null) {
 			clearTimeout(this.autoplayTimeout);
 			this.autoplayTimeout = null;
 		}
@@ -1098,7 +1136,7 @@ jQuery(function ($) {
 		publish = {	
 			moveLeft: _bind(instance.moveLeft, instance),
 			moveRight: _bind(instance.moveRight, instance),
-			goTo: _bind(instance.goTo, instance),
+			moveTo: _bind(instance.moveTo, instance),
 			startAutoplay: _bind(instance.startAutoplay, instance),
 			stopAutoplay: _bind(instance.stopAutoplay, instance),
 			lock: _bind(instance.lock, instance),
