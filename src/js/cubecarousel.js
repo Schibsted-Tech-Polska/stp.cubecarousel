@@ -831,7 +831,24 @@ jQuery(function ($) {
 
 			index = this.dataIndexOffset(index);
 
-			direction = (this.currentIndex < index)	? 'Right' : 'Left';
+			if(this.options.useShortestPath) {
+				if(this.currentIndex < index) {
+					if((this.data.length / 2) >= index - this.currentIndex) {
+						direction = 'Right';		
+					} else {
+						direction = 'Left';	
+					}
+				} else {
+					if((this.data.length / 2) >= this.currentIndex - index) {
+						direction = 'Left';
+					} else {
+						direction = 'Right';
+					}
+				}
+			} else {
+				direction = (this.currentIndex < index)	? 'Right' : 'Left';	
+			}
+			
 
 			this['move' + direction](function () {
 				setTimeout(function () {
