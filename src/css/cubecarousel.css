@@ -44,7 +44,7 @@
 }
 .cube-carousel-template {
   display: block;
-  width: 100%;
+  width: 1em;
   height: 100%;
   overflow: hidden;
 }

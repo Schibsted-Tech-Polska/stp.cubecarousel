@@ -53,6 +53,16 @@
 	color: #fff;
 	text-shadow: 0 0 5px #000;
 	text-align: right;
-	font-size: 0.2em;
-	line-height: 5.7em;
+	font-size: 0.15em;
+	line-height: 7.7em;
+}
+
+.dot-controls .active {
+    background: rgb(64, 197, 64);
+}
+
+.simple-cube-controls {
+    width: 100%;
+    max-width: 165px;
+    margin: 1.5% auto 0;
 }

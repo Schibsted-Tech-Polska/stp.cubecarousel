@@ -18,3 +18,125 @@ table {
     border-collapse: collapse;
     border-spacing: 0;
 }
+
+body {
+	font-size: 12px;
+	font-family: Tahoma, Geneva, sans-serif;
+}
+
+a, a:active, a:visited {
+	color: rgb(36, 150, 228);
+	text-decoration: none;
+}
+
+a:hover {
+	color: rgb(64, 197, 64);
+}
+
+
+.example {
+	width: 100%;
+	max-width: 700px;
+	border-radius: 2%;
+	padding: 2%;
+	margin: 2% auto 4%;
+	box-sizing: border-box;
+	border: 1px solid #ddd;
+	background: rgb(247, 247, 249);
+}
+
+.dot-controls {
+	text-align: center;	
+	padding: 2% 0;
+	border-radius: 10% / 50%;	
+}
+
+.dot-controls li {
+	display: inline-block;
+	width: 10px;
+	height: 10px;
+	margin: 0 14px;
+}
+
+.dot-controls a {
+	width: 100%;
+	height: 100%;
+	text-indent: -999em;
+	display: block;
+	background: rgb(36, 150, 228); 	
+	border-radius: 100%;
+}
+
+h1 {
+    font-size: 20px;
+    text-align: center;
+    margin: 2% 0 5%;
+    font-weight: bold;
+	text-align: left;
+}
+
+.example-cube {
+    margin: 0 auto;
+}
+
+.example-info {
+    padding: 7% 0 1%;
+    width: 100%;
+    max-width: 580px;
+    box-sizing: border-box;
+    margin: 0 auto;
+}
+
+.sources-list li {
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.sources-list li:last-child {
+	border-bottom: none;
+}
+
+.sources-list li > * {
+	display: inline-block;
+}
+
+.sources-list li strong {
+	width: 100%;	
+}
+
+.fork-me {
+	position: absolute;
+	top: 0;
+	right: 0;
+	border: 0;
+	z-index: 100;
+	width: 120px;
+	display: block;
+}
+
+.fork-me img {
+	max-width: 100%;	
+}
+
+@media screen and (min-width: 400px) {
+	h1 {
+		text-align: center;
+	}
+
+	.sources-list li strong {
+		width: 135px;	
+	
+}
+}
+
+@media screen and (min-width: 600px) {
+	body {
+		font-size: 15px;	
+	}
+	h1 {
+		font-size: 40px;
+	}
+	.fork-me {
+		width: 149px;	
+	}	
+}

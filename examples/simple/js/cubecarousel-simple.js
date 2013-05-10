@@ -50,7 +50,12 @@ jQuery(function ($) {
 				$('.simple-cube-controls').on('click', 'a', function () {
 				
 					var targetIndex = parseInt($(this).text(), 10) - 1;
-					that.moveTo(targetIndex);
+
+					if(!that.isLocked() && !$(this).hasClass('active')) {
+						that.moveTo(targetIndex);
+						$(this).parent('li').parent('ul').find('a.active').removeClass('active');
+						$(this).addClass('active');	
+					}
 
 					return false;
 				});
