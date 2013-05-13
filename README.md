@@ -15,7 +15,7 @@ During initialization, you have to privide at least data getter function and ren
 </div>
 ```
 ```javascript
-$('.cube').cubeCarousel({
+var cube = $('.cube').cubeCarousel({
 	dataGetter: function() {
 		return [{
 			title: 'Item one'
@@ -33,7 +33,7 @@ $('.cube').cubeCarousel({
 });
 ```
 
-This is the bare minimum you have to do to setup the carousel. For more extension options, keep on reading.
+This is the bare minimum you have to do to setup the carousel. There are no control options so this cube will just stand still, but you can create your own controls easily with help of ```cube.moveTo(Number)```, ```cube.moveRight()``` and ```cube.moveLeft()``` methods. For more extension options, keep on reading.
 
 
 
@@ -215,23 +215,25 @@ cubeInstance.trigger('myevent', {prop: 'value'});
 
 ##### moveTo(Number, Function)
 Moves cube to specified index
-paramerers:
-{Number} data index specifiing where to move, starting with 0
+```javascript
+{Number} data index specifying where to move, starting with 0
 {Function} callback called when the move is done
+```
 
 ##### moveRight(Function)
 Moves cube one step right
-parameters:
+```javascript
 {Function} callback called when the move is done
+```
 
 ##### moveLeft(Function)
 Moves cube one step left
-parameters:
+```javascript
 {Function} callback called when the move is done
+```
 
 ##### startAutoplay()
-Starts autoplay countdown
-if autoplay option was correctly provided as a number, this method will reset 
+Starts autoplay countdown. If autoplay option was correctly provided as a number, this method will reset 
 previous autoplay countdown (if there is any) and start new one
 
 ##### stopAutoplay()
@@ -246,5 +248,5 @@ Cancels carlousel lock
 ##### unlock()
 Returns boolean value indicating wether carousel is locked or not 
 
-## Examples
+## Demos
 Example carousels are available [here](http://schibsted.pl "Examples").
