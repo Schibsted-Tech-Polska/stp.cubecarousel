@@ -9,7 +9,7 @@ jQuery(function ($) {
 			height : 400
 		},
 	
-		// promise for data
+		// array of data
 		dataGetter: function () {
 		
 			return [
@@ -73,10 +73,6 @@ jQuery(function ($) {
 		var that = this;
 	
 		this.buildControls();	
-	});
-
-	carousel.on('aftermove', function (e) {
-		
 	});
 
 

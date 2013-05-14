@@ -1,6 +1,6 @@
 # Customizable and responsive cube carousel
 
-Main goal behind this plugin was to make it flexible and easy to customize. This is accomplished by allowing developer to extend carousel core during initialization as well as requiring him or her to provide custom data retrieval and rendering functions.
+Main goal behind this carousel plugin was to make it flexible and easy to customize. This is accomplished by allowing developer to extend carousel core during initialization as well as requiring him or her to provide custom data retrieval and rendering functions.
 
 ## Overwiew
 
@@ -33,7 +33,7 @@ var cube = $('.cube').cubeCarousel({
 });
 ```
 
-This is the bare minimum you have to do to setup the carousel. There are no control options so this cube will just stand still, but you can create your own controls easily with help of ```cube.moveTo(Number)```, ```cube.moveRight()``` and ```cube.moveLeft()``` methods. For more extension options, keep on reading.
+This is the bare minimum you have to do to setup the carousel. There are no control options so this cube will just sit still, but you can create your own controls easily with help of ```cube.moveTo(Number)```, ```cube.moveRight()``` and ```cube.moveLeft()``` methods. More on that later.
 
 
 
@@ -76,7 +76,7 @@ dataGetter: function() {
 }
 ```
 
-This example assumes that there is some middle server providing final destination url and then array of items is stored in "items" property of JSON response. Of course this is not the only possible scenario. There's no limit to middle servers as long as you return promise that will resolve in an array.
+This example assumes that there is some middle host providing final destination url and then array of items is stored in "items" property of JSON response. Of course this is not the only possible scenario. There's no limit to middle hosts (there can be none as well) as long as you return promise that will resolve in an array.
 
 
 ### Render function 

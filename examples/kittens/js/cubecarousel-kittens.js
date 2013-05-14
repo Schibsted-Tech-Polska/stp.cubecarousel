@@ -8,8 +8,6 @@ jQuery(function ($) {
 			width : 580,
 			height : 400
 		},
-		autoplay : false,
-		showcontrols : true,
 	
 		// promise for data
 		dataGetter: function () {
