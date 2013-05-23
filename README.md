@@ -249,4 +249,4 @@ Cancels carlousel lock
 Returns boolean value indicating wether carousel is locked or not 
 
 ## Demos
-Example carousels are available [here](http://schibsted-tech-polska.github.io/cubecarousel/ "Examples").
+Example carousels are available [here](http://schibsted-tech-polska.github.io/stp.cubecarousel/ "Examples").
