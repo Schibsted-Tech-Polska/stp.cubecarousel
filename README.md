@@ -245,7 +245,7 @@ Use this method if you'd like to prevent any movement of carousel
 ##### unlock()
 Cancels carlousel lock 
 
-##### unlock()
+##### isLocked()
 Returns boolean value indicating wether carousel is locked or not 
 
 ## Demos
