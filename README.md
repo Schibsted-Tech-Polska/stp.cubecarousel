@@ -2,7 +2,7 @@
 
 Main goal behind this carousel plugin was to make it flexible and easy to customize. This is accomplished by allowing developer to extend carousel core during initialization as well as requiring him or her to provide custom data retrieval and rendering functions.
 
-## Overwiew
+## Overview
 
 During initialization, you have to privide at least data getter function and rendering function. When data array is grabbed, carousel will render itself, for example:
 ```html
