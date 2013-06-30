@@ -1,5 +1,5 @@
 /*
- * CubeCarousel v1.0
+ * CubeCarousel v1.1
  *
  *
  * The MIT License (MIT)
@@ -256,6 +256,16 @@ jQuery(function ($) {
     this.currentIndex = 0;
 
     /**
+     * Cumulative number of all the turns
+     *
+     * @private
+     * @property absoluteIndex
+     * @type Number
+     * @default 0
+     */
+    this.absoluteIndex = 0;
+
+    /**
      * autoplay's slide timeout, runs moving cube to right
      *
      * @private
@@ -490,11 +500,6 @@ jQuery(function ($) {
 
     var  middle = this.currentIndex,
       indexes = [-1, 0, 1],
-      classMap = {
-        '-1' : 'cube-carousel-left',
-        '0' : 'cube-carousel-front',
-        '1' : 'cube-carousel-right'  
-      },
       dataObject,
       currentPane,
       i;
@@ -505,8 +510,8 @@ jQuery(function ($) {
     for(i = 0; i < indexes.length; i++) {
       dataObject = this.data[this.dataIndexOffset(this.currentIndex + indexes[i])];
       currentPane = this.renderPaneTemplate(dataObject, this.paneTemplate.clone(), this.dataIndexOffset(this.currentIndex + indexes[i]));
+      currentPane.css('transform', 'rotateY(' + indexes[i] * 90 + 'deg) translateZ(.5em)');
       this.cubeNode.append(currentPane);
-      currentPane.addClass(classMap[indexes[i]]);
     }
   };
 
@@ -562,6 +567,7 @@ jQuery(function ($) {
         this.moveInlineRight(callback);
       }
       this.setCurrentIndex(this.currentIndex + 1);
+      this.absoluteIndex++;
     }
 
     return false;  
@@ -594,6 +600,7 @@ jQuery(function ($) {
       }
 
       this.setCurrentIndex(this.currentIndex - 1);
+      this.absoluteIndex--;
     }
     
     return false;  
@@ -624,23 +631,14 @@ jQuery(function ($) {
     
         var newPane;
         
-        // switch classes for panes accordingly to new cube rotation  
-        that.cubeNode.find('.cube-carousel-left').remove();
-        that.cubeNode.find('.cube-carousel-front').removeClass('cube-carousel-front').addClass('cube-carousel-left');
-        that.cubeNode.find('.cube-carousel-right').removeClass('cube-carousel-right').addClass('cube-carousel-front');
+        // switch classes for panes accordingly to new cube rotation 
+        that.cubeNode.find('.cube-carousel-template').first().remove();
 
         // new right pane
         newPane = that.renderPaneTemplate(that.data[that.dataIndexOffset(that.currentIndex + 1)], that.paneTemplate.clone(), that.dataIndexOffset(that.currentIndex + 1));
-        newPane.addClass('cube-carousel-right');
+		newPane.css('transform', 'rotateY(' + ((that.absoluteIndex + 1) * 90) + 'deg) translateZ(.5em)');
         that.cubeNode.append(newPane);
 
-        // reset cube state
-        that.rotate({
-          x: 0,
-          y: 90,
-          z: 0
-        });
-          
         that.locked = false;
 
         that.trigger('aftermove', {
@@ -681,26 +679,16 @@ jQuery(function ($) {
       duration: this.options.duration,
       complete: function () {
   
-        var newPane;  
-        
+        var newPane; 
+		
         // switch classes for panes accordingly to new cube rotation    
-        that.cubeNode.find('.cube-carousel-right').remove();
-
-        that.cubeNode.find('.cube-carousel-front').removeClass('cube-carousel-front').addClass('cube-carousel-right');
-        that.cubeNode.find('.cube-carousel-left').removeClass('cube-carousel-left').addClass('cube-carousel-front');
+        that.cubeNode.find('.cube-carousel-template').last().remove();
 
         // new left pane  
         newPane = that.renderPaneTemplate(that.data[that.dataIndexOffset(that.currentIndex - 1)], that.paneTemplate.clone(), that.dataIndexOffset(that.currentIndex - 1));
-        newPane.addClass('cube-carousel-left');
+		newPane.css('transform', 'rotateY(' + ((that.absoluteIndex - 1) * 90) + 'deg) translateZ(.5em)');
         that.cubeNode.prepend(newPane);
 
-        // reset cube state
-        that.rotate({
-          x: 0,
-          y: -90,
-          z: 0
-        });
-        
         that.locked = false;
 
         that.trigger('aftermove', {

@@ -68,6 +68,13 @@
   height: 100%;
   overflow: hidden;
 
+	-webkit-transform: translateZ( @cubeFigureOffset );
+    -moz-transform: translateZ( @cubeFigureOffset );
+    -ms-transform: translateZ( @cubeFigureOffset );
+    -o-transform: translateZ( @cubeFigureOffset );
+    transform: translateZ( @cubeFigureOffset );
+
+
   .cube-carousel-css3 & {
     position: absolute;  
   }
@@ -77,34 +84,6 @@
     float: left;  
   }
 
-  .cube-carousel-css3 &.cube-carousel-front {
-    -webkit-transform: translateZ( @cubeFigureOffset ) rotateY( 0deg );
-    -moz-transform: translateZ( @cubeFigureOffset ) rotateY( 0deg );
-    -ms-transform: translateZ( @cubeFigureOffset ) rotateY( 0deg );
-    -o-transform: translateZ( @cubeFigureOffset ) rotateY( 0deg );
-    transform: translateZ( @cubeFigureOffset ) rotateY( 0deg );
-  }
-  .cube-carousel-css3 &.cube-carousel-back {
-    -webkit-transform: rotateX( -180deg ) rotateZ( 180deg ) translateZ( @cubeFigureOffset );
-    -moz-transform: rotateX( -180deg ) rotateZ( 180deg ) translateZ( @cubeFigureOffset );
-    -ms-transform: rotateX( -180deg ) rotateZ( 180deg ) translateZ( @cubeFigureOffset );
-    -o-transform: rotateX( -180deg ) rotateZ( 180deg ) translateZ( @cubeFigureOffset );
-    transform: rotateX( -180deg ) rotateZ( 180deg ) translateZ( @cubeFigureOffset );
-  }
-  .cube-carousel-css3 &.cube-carousel-left {
-    -webkit-transform: rotateY( -90deg ) translateZ( @cubeFigureOffset ) ;
-    -moz-transform: rotateY( -90deg ) translateZ( @cubeFigureOffset ) ;
-    -ms-transform: rotateY( -90deg ) translateZ( @cubeFigureOffset ) ;
-    -o-transform: rotateY( -90deg ) translateZ( @cubeFigureOffset ) ;
-    transform: rotateY( -90deg ) translateZ( @cubeFigureOffset ) ;
-  }
-  .cube-carousel-css3 &.cube-carousel-right {
-    -webkit-transform: rotateY( 90deg ) translateZ( @cubeFigureOffset );
-    -moz-transform: rotateY( 90deg ) translateZ( @cubeFigureOffset );
-    -ms-transform: rotateY( 90deg ) translateZ( @cubeFigureOffset );
-    -o-transform: rotateY( 90deg ) translateZ( @cubeFigureOffset );
-    transform: rotateY( 90deg ) translateZ( @cubeFigureOffset );
-  }
 }
 
 .cube-carousel-content {
